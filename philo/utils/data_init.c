@@ -6,7 +6,7 @@
 /*   By: aluis <aluis@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/22 09:14:32 by aluis             #+#    #+#             */
-/*   Updated: 2026/03/22 19:40:44 by aluis            ###   ########.fr       */
+/*   Updated: 2026/03/22 20:33:57 by aluis            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ void	data_init(t_table *table)
 
 	i = -1;
 	table -> end_simulation = false;
+	table -> all_threads_ready = false;
+	table -> threads_running_nbr = 0;
 	table -> philos = safe_malloc(sizeof(t_philo) * table -> philo_nbr);
 	safe_mutex_handle(&table -> table_mutex, INIT);
 	safe_mutex_handle(&table -> write_mutex, INIT);

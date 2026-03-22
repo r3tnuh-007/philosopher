@@ -11,6 +11,7 @@ SRCS =	./philo/utils/data_init.c\
 		./philo/utils/error_exit.c\
 		./philo/utils/getters_and_setters.c\
 		./philo/utils/gettime.c\
+		./philo/utils/monitor_dinner.c\
 		./philo/utils/parse_input.c\
 		./philo/utils/precise_usleep.c\
 		./philo/utils/safe_malloc.c\

@@ -6,7 +6,7 @@
 /*   By: aluis <aluis@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/22 07:46:25 by aluis             #+#    #+#             */
-/*   Updated: 2026/03/22 20:02:35 by aluis            ###   ########.fr       */
+/*   Updated: 2026/03/22 20:45:48 by aluis            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,18 +83,20 @@ typedef struct s_philo
 
 struct s_table
 {
-	long	philo_nbr;
-	long	time_to_die;
-	long	time_to_eat;
-	long	time_to_sleep;
-	long	nbr_limit_meals;
-	long	start_simulations;
-	bool	end_simulation;
-	bool	all_threads_ready;
-	t_mtx	table_mutex;
-	t_mtx	write_mutex;
-	t_fork	*forks;
-	t_philo	*philos;
+	long		philo_nbr;
+	long		time_to_die;
+	long		time_to_eat;
+	long		time_to_sleep;
+	long		nbr_limit_meals;
+	long		start_simulations;
+	long		threads_running_nbr;
+	bool		end_simulation;
+	bool		all_threads_ready;
+	pthread_t	monitor;
+	t_mtx		table_mutex;
+	t_mtx		write_mutex;
+	t_fork		*forks;
+	t_philo		*philos;
 };
 
 void	safe_mutex_handle(t_mtx *mutex, t_opcode opcode);
@@ -107,6 +109,8 @@ long	get_long(t_mtx *mutex, long *value);
 bool	simulation_finished(t_table *table);
 void	wait_all_threads(t_table *table);
 void	dinner_start(t_table *table);
+void	*monitor_dinner(void *data);
+void	increase_long(t_mtx *mutex, long *value);
 void	write_status(t_philo_status status, t_philo *philo, bool debug);
 
 #endif
