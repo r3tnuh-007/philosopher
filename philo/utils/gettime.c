@@ -6,7 +6,7 @@
 /*   By: aluis <aluis@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/22 18:02:13 by aluis             #+#    #+#             */
-/*   Updated: 2026/03/22 18:12:57 by aluis            ###   ########.fr       */
+/*   Updated: 2026/05/17 14:45:23 by aluis            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,12 @@ long	gettime(t_time_code time_code)
 	if (gettimeofday(&tv, NULL))
 		error_exit("ERROR: Gettimeofday failed!\n");
 	if (SECOND == time_code)
-		return (tv.tv_sec + tv.tv_usec / 1e6);
+		return (tv.tv_sec + (tv.tv_usec / 1e6));
 	else if (MILLISECOND == time_code)
-		return ((tv.tv_sec * 1e3) + tv.tv_usec / 1e3);
+		return ((tv.tv_sec * 1e3) + (tv.tv_usec / 1e3));
 	else if (MICROSECOND == time_code)
 		return ((tv.tv_sec * 1e6) + tv.tv_usec);
 	else
-		error_exit("ERRR: Wrong input to gettime!\n");
+		error_exit("ERROR: Wrong input to gettime!\n");
 	return (1337);
 }

@@ -6,7 +6,7 @@
 /*   By: aluis <aluis@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/22 08:01:05 by aluis             #+#    #+#             */
-/*   Updated: 2026/03/22 19:51:51 by aluis            ###   ########.fr       */
+/*   Updated: 2026/05/17 13:27:23 by aluis            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	main(int argc, char **argv)
 		parse_input(&table, argv);
 		data_init(&table);
 		dinner_start(&table);
-		//clean(&table);
+		clean(&table);
 	}
 	else
 	{

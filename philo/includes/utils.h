@@ -6,7 +6,7 @@
 /*   By: aluis <aluis@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/22 07:46:25 by aluis             #+#    #+#             */
-/*   Updated: 2026/03/22 18:34:22 by aluis            ###   ########.fr       */
+/*   Updated: 2026/05/17 13:28:30 by aluis            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,5 +51,7 @@ void	*safe_malloc(size_t bytes);
 void	data_init(t_table *table);
 long	gettime(t_time_code time_code);
 void	precise_usleep(long usec, t_table *table);
+void	*monitor_dinner(void *data);
+void	clean(t_table *table);
 
 #endif

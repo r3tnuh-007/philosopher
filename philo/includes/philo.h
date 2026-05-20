@@ -6,7 +6,7 @@
 /*   By: aluis <aluis@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/22 07:46:25 by aluis             #+#    #+#             */
-/*   Updated: 2026/03/22 20:45:48 by aluis            ###   ########.fr       */
+/*   Updated: 2026/05/17 14:46:42 by aluis            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@
 # define C		"\033[1;36m"
 # define W		"\033[1;37m"
 
-# define DEBUG_MODE 1
+# define DEBUG_MODE 0 // set to 0 when I presente
 
 /*
  * creation of an alias for the mutex variable
@@ -89,9 +89,9 @@ struct s_table
 	long		time_to_sleep;
 	long		nbr_limit_meals;
 	long		start_simulations;
-	long		threads_running_nbr;
 	bool		end_simulation;
 	bool		all_threads_ready;
+	long		threads_running_nbr;
 	pthread_t	monitor;
 	t_mtx		table_mutex;
 	t_mtx		write_mutex;
@@ -109,8 +109,11 @@ long	get_long(t_mtx *mutex, long *value);
 bool	simulation_finished(t_table *table);
 void	wait_all_threads(t_table *table);
 void	dinner_start(t_table *table);
-void	*monitor_dinner(void *data);
-void	increase_long(t_mtx *mutex, long *value);
 void	write_status(t_philo_status status, t_philo *philo, bool debug);
+bool	all_threads_running(t_mtx *mutex, long *threads,
+			long philo_nbr);
+void	increase_long(t_mtx *mutex, long *value);
+void	thinking(t_philo *philo, bool pre_simulation);
+void	de_sincronize_philos(t_philo *philo);
 
 #endif

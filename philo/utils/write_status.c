@@ -6,7 +6,7 @@
 /*   By: aluis <aluis@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/22 18:30:11 by aluis             #+#    #+#             */
-/*   Updated: 2026/03/22 20:00:35 by aluis            ###   ########.fr       */
+/*   Updated: 2026/05/17 10:43:28 by aluis            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ static void	write_status_debug(t_philo_status status,
 		printf(W"%-6ld"RST" %d is thinking\n", elapsed, philo -> id);
 	else if (DIED == status)
 		printf(RED"\t\t%6ld %d died\n"RST, elapsed, philo -> id);
-
 }
 
 void	write_status(t_philo_status status, t_philo *philo, bool debug)

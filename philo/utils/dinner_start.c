@@ -6,15 +6,64 @@
 /*   By: aluis <aluis@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/22 11:15:36 by aluis             #+#    #+#             */
-/*   Updated: 2026/03/22 21:13:00 by aluis            ###   ########.fr       */
+/*   Updated: 2026/05/17 14:22:11 by aluis            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-static void	thinking(t_philo *philo)
+/*
+* if (philo_even && (t_eat <= t_sleep))
+* 	t_think = 0;
+*
+*
+* if (philo_even && (t_eat > t_sleep))
+* 	t_think = t_eat - t_sleep;
+*
+* if (philo_odd && (t_eat < t_sleep))
+* 	t_think = t_eat * 2 - t_sleep;
+*
+*
+*
+*/
+void	thinking(t_philo *philo, bool pre_simulation)
 {
-	write_status(THINKING, philo, DEBUG_MODE);
+	long	t_eat;
+	long	t_sleep;
+	long	t_think;
+
+	if (!pre_simulation)
+		write_status(THINKING, philo, DEBUG_MODE);
+	if (philo -> table -> philo_nbr % 2 == 0)
+		return ;
+	t_eat = philo -> table -> time_to_eat;
+	t_sleep = philo -> table -> time_to_sleep;
+	t_think = t_eat * 2 - t_sleep;
+	if (t_think < 0)
+		t_think = 0;
+	precise_usleep(t_think * 0.42, philo -> table);
+}
+
+/*
+* Same algo but...
+* fake to lock the forks, to avoid deadlocks
+* sleep until the monitor will bust it
+*
+*/
+void	*lone_philo(void *arg)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *) arg;
+	wait_all_threads(philo -> table);
+	set_long(&philo -> philo_mutex, &philo -> last_meal_time,
+		gettime(MILLISECOND));
+	increase_long(&philo -> table -> table_mutex,
+		&philo -> table -> threads_running_nbr);
+	write_status(TAKE_FIRST_FORK, philo, DEBUG_MODE);
+	while (!simulation_finished(philo -> table))
+		usleep(200);
+	return (NULL);
 }
 
 static void	eat(t_philo *philo)
@@ -24,7 +73,7 @@ static void	eat(t_philo *philo)
 	safe_mutex_handle(&philo -> second_fork -> fork, LOCK);
 	write_status(TAKE_SECOND_FORK, philo, DEBUG_MODE);
 	set_long(&philo -> philo_mutex, &philo -> last_meal_time,
-			gettime(MILLISECOND));
+		gettime(MILLISECOND));
 	philo -> meals_counter ++;
 	write_status(EATING, philo, DEBUG_MODE);
 	precise_usleep(philo -> table -> time_to_eat, philo -> table);
@@ -46,12 +95,13 @@ void	*dinner_simulation(void *data)
 {
 	t_philo	*philo;
 
-	philo = (t_philo * ) data;
+	philo = (t_philo *) data;
 	wait_all_threads(philo -> table);
-	set_long(&philo -> philo_mutex,
-		&philo -> last_meal_time, gettime(MILLISECOND));
+	set_long(&philo -> philo_mutex, &philo -> last_meal_time,
+		gettime(MILLISECOND));
 	increase_long(&philo -> table -> table_mutex,
 		&philo -> table -> threads_running_nbr);
+	de_sincronize_philos(philo);
 	while (!simulation_finished(philo -> table))
 	{
 		if (philo -> full)
@@ -59,7 +109,7 @@ void	*dinner_simulation(void *data)
 		eat(philo);
 		write_status(SLEEPING, philo, DEBUG_MODE);
 		precise_usleep(philo -> table -> time_to_sleep, philo -> table);
-		thinking(philo);
+		thinking(philo, false);
 	}
 	return (NULL);
 }
@@ -85,12 +135,13 @@ void	dinner_start(t_table *table)
 	if (table -> nbr_limit_meals == 0)
 		return ;
 	else if (table -> philo_nbr == 1)
-		; // to do
+		safe_thread_handle(&table -> philos[0].thread_id, lone_philo,
+			&table -> philos[0], CREATE);
 	else
 	{
 		while (++ i < table -> philo_nbr)
 			safe_thread_handle(&table -> philos[i].thread_id, dinner_simulation,
-					&table -> philos[i], CREATE);
+				&table -> philos[i], CREATE);
 	}
 	safe_thread_handle(&table -> monitor, monitor_dinner, table, CREATE);
 	table -> start_simulations = gettime(MILLISECOND);
@@ -98,5 +149,6 @@ void	dinner_start(t_table *table)
 	i = -1;
 	while (++ i < table -> philo_nbr)
 		safe_thread_handle(&table -> philos[i].thread_id, NULL, NULL, JOIN);
-
+	set_bool(&table -> table_mutex, &table -> end_simulation, true);
+	safe_thread_handle(&table -> monitor, NULL, NULL, JOIN);
 }
