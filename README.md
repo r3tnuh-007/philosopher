@@ -101,5 +101,5 @@ No AI was used to generate the core logic of the simulation; all algorithmic dec
 ## Skalidraw showcase
 
 ```link
-https://excalidraw.com/#json=5ELrq9moTRe0JnFkk5t4B,ia1vPjTNPpjLbVLdcuNiLw
+https://excalidraw.com/#json=H9kvHSQ2TGNgUeaIlhQ5I,Hlwjaf8ikbrzdadMpuXmIw
 ```
